@@ -13,7 +13,8 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import Lottie from "react-lottie-player";
 import waveDataAnimation from "@/assets/animations/wave.json";
-import { extractImageUrl, extractText, useAiChat } from "@/hooks/useAiChat";
+import { useAiChat } from "@/hooks/useAiChat";
+import { extractText, extractImageUrl } from "@/utils/ai";
 import BubbleChat from "@/components/ui/bubbleChat";
 
 const fileToBase64 = (file: File): Promise<string> =>
@@ -128,8 +129,8 @@ const Home = () => {
 
   const stopListening = () => {
     listeningRef.current = false;
-    recognitionRef.current?.stop();
     setListening(false);
+    recognitionRef.current?.stop();
   };
 
   const handleVoiceClick = () => {
@@ -162,7 +163,7 @@ const Home = () => {
   }, [messages]);
 
   return (
-    <div className="w-full bg-[#E8E9C9]">
+    <div className="w-full bg-white">
       <div className="w-full min-h-screen flex flex-col items-center md:px-0 px-4">
         <div className="flex flex-col relative max-w-200 w-full pt-5 gap-4 pb-50 h-fit">
           {messages.length !== 0 ? (
@@ -186,9 +187,9 @@ const Home = () => {
             })
           ) : (
             <div className="grid place-items-center">
-              <p className="text-6xl font-medium text-[#228D57] mt-[calc(100vh/3)]">
-                Welcome!
-              </p>
+              <h1 className="text-8xl font-bold text-[#228D57] mt-[calc(100vh/3)]">
+                WELCOME
+              </h1>
             </div>
           )}
           {messages.length !== 0 && <div ref={bottomRef} />}
