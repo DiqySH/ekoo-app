@@ -1,21 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import TextArea from "react-textarea-autosize";
 import { type ChatForm, type Message } from "@/@types/ai";
-import { createTextareaKeyDown } from "@/utils/textarea";
-import { useForm, useWatch } from "react-hook-form";
-import { ArrowUp, Mic, Plus, X } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-import Lottie from "react-lottie-player";
-import waveDataAnimation from "@/assets/animations/wave.json";
+import { useForm } from "react-hook-form";
 import { useAiChat } from "@/hooks/useAiChat";
-import { extractText, extractImageUrl } from "@/utils/ai";
-import BubbleChat from "@/components/ui/bubbleChat";
+import ChatMessages from "@/components/ui/chat-messages";
+import ChatInput from "@/components/ui/chat-input";
+import ImagePreview from "@/components/ui/image-preview";
 
 const fileToBase64 = (file: File): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -36,19 +25,11 @@ const Home = () => {
   const listeningRef = useRef(false);
   const finalTranscriptRef = useRef<string>("");
   const recognitionRef = useRef<ISpeechRecognition>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const { register, handleSubmit, reset, control, setValue } =
     useForm<ChatForm>();
   const { mutateAsync, isPending } = useAiChat();
 
-  const content = useWatch({
-    control,
-    name: "content",
-  });
-
   const submit = async (inputs: ChatForm) => {
-    reset();
-
     const content: Message["content"] = imageBase64
       ? [
           { type: "text", text: inputs.content },
@@ -75,8 +56,6 @@ const Home = () => {
 
     setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
   };
-
-  const onKeyDown = createTextareaKeyDown(handleSubmit(submit));
 
   useEffect(() => {
     const SpeechRecognition =
@@ -146,164 +125,36 @@ const Home = () => {
     setImageBase64(base64);
   };
 
-  useGSAP(() => {
-    gsap.to(".speech-and-send-container", {
-      x: listening ? 56 : 0,
-      ease: "power2.out",
-    });
-
-    gsap.to(".send", {
-      display: listening ? "hidden" : "",
-    });
-  }, [listening]);
-
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
     console.log(messages);
   }, [messages]);
 
   return (
-    <div className="w-full bg-white">
-      <div className="w-full min-h-screen flex flex-col items-center md:px-0 px-4">
-        <div className="flex flex-col relative max-w-200 w-full pt-5 gap-4 pb-50 h-fit">
-          {messages.length !== 0 ? (
-            messages.map((message, i) => {
-              const imageUrl = extractImageUrl(message.content);
-
-              return (
-                <div key={i} className="w-full flex flex-col">
-                  {imageUrl && (
-                    <img
-                      src={imageUrl}
-                      className="max-w-[50%] ml-auto rounded-xl mb-3"
-                      alt="user upload"
-                    />
-                  )}
-                  <BubbleChat variant={message.role}>
-                    {extractText(message.content)}
-                  </BubbleChat>
-                </div>
-              );
-            })
-          ) : (
-            <div className="grid place-items-center">
-              <h1 className="text-8xl font-bold text-[#228D57] mt-[calc(100vh/3)]">
-                WELCOME
-              </h1>
-            </div>
-          )}
+    <div className="w-full bg-white flex flex-row">
+      <div className="flex-1 flex flex-col h-screen relative md:px-0 px-4">
+        <div className="overflow-y-auto flex-1 flex flex-col items-center">
+          <ChatMessages messages={messages} />
           {messages.length !== 0 && <div ref={bottomRef} />}
-        </div>
-        <div className="flex flex-col justify-center fixed bottom-10 inset-x-2 md:inset-x-0 mx-auto items-center">
-          {imageBase64 && (
-            <div className="max-w-200 w-full mb-2 flex items-start justify-start">
-              <div className="relative">
-                <button
-                  className="absolute top-1 right-1 bg-black/50 rounded-full grid place-items-center p-1 cursor-pointer"
-                  onClick={() => setImageBase64(null)}
-                >
-                  <X color="white" strokeWidth={1} size={16} />
-                </button>
-                <img
-                  src={`data:image/png;base64,${imageBase64}`}
-                  alt=""
-                  className="rounded-xl max-h-25"
-                />
-              </div>
-            </div>
-          )}
-          <form
-            className="flex flex-col max-w-200 w-full border border-black/40 rounded-4xl bg-white px-3 pb-3 overflow-hidden"
-            onSubmit={handleSubmit(submit)}
-          >
-            <TextArea
-              maxRows={8}
-              className="resize-none focus:outline-0 px-4 py-6 hide-scroll"
-              placeholder="I just bought matcha for 5,000 rupiah..."
-              onKeyDown={onKeyDown}
-              {...register("content", { required: true })}
+          <div className="sticky bottom-0 w-full flex flex-col items-center bg-gradient-to-t from-white to-white/95 pb-4 z-10">
+            <ImagePreview
+              imageBase64={imageBase64}
+              onRemove={() => setImageBase64(null)}
             />
-            <div className="flex w-full h-10 justify-between items-center">
-              <div className="flex items-center justify-center gap-2">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button
-                      type="button"
-                      onClick={() => fileInputRef.current?.click()}
-                      className="grid place-items-center w-10 h-10 cursor-pointer"
-                      disabled={isPending}
-                    >
-                      <Plus strokeWidth={1.5} />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Add a media</p>
-                  </TooltipContent>
-                </Tooltip>
-              </div>
-              <div className="flex items-center justify-center gap-4 speech-and-send-container">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    {listening ? (
-                      <button
-                        className="grid place-items-center w-10 h-10 cursor-pointer bg-black rounded-full"
-                        onClick={handleVoiceClick}
-                        type="button"
-                        disabled={isPending}
-                      >
-                        <Lottie
-                          loop
-                          play
-                          animationData={waveDataAnimation}
-                          style={{
-                            width: 30,
-                          }}
-                        />
-                      </button>
-                    ) : (
-                      <button
-                        className="grid place-items-center w-10 h-10 cursor-pointer rounded-full"
-                        onClick={handleVoiceClick}
-                        type="button"
-                        disabled={isPending}
-                      >
-                        <Mic strokeWidth={1.5} />
-                      </button>
-                    )}
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Speech to Text</p>
-                  </TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button
-                      className="grid place-items-center w-10 h-10 bg-[#242424] rounded-full cursor-pointer disabled:opacity-40 transition-all send"
-                      disabled={!content?.trim() || isPending}
-                      type="submit"
-                    >
-                      <ArrowUp color="white" />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Send</p>
-                  </TooltipContent>
-                </Tooltip>
-              </div>
-            </div>
-          </form>
+            <ChatInput
+              onSubmit={submit}
+              listening={listening}
+              onVoiceClick={handleVoiceClick}
+              onImageSelect={handleImageSelect}
+              isPending={isPending}
+              register={register}
+              handleSubmit={handleSubmit}
+              reset={reset}
+              control={control}
+            />
+          </div>
         </div>
       </div>
-      <input
-        type="file"
-        accept="image/*"
-        hidden
-        ref={fileInputRef}
-        onChange={(e) => {
-          const file = e.target.files?.[0];
-          if (file) handleImageSelect(file);
-        }}
-      />
     </div>
   );
 };

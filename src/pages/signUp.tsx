@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { Link } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signUpSchema } from "@/schemas/auth";
-import ErrorSpan from "@/components/ui/errorSpan";
+import ErrorSpan from "@/components/ui/error-span";
 import { useAuth } from "@/context/auth";
 import { useState } from "react";
 
