@@ -1,9 +1,9 @@
 import { createBrowserRouter } from "react-router";
-import Home from "./pages/home";
+import Home from "./pages/Home"
 import { Protected } from "./components/protected";
 import { Public } from "./components/public";
-import SignIn from "./pages/signIn";
-import SignUp from "./pages/signUp";
+import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
 import SidebarLayout from "./layouts/sidebarLayout";
 
 const router = createBrowserRouter([
