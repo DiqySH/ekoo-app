@@ -4,8 +4,8 @@ import "./index.css";
 import { RouterProvider } from "react-router/dom";
 import router from "./router.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { AuthProvider } from "./context/auth.tsx";
-import { SidebarProvider } from "./context/sidebar.tsx";
+import { AuthProvider } from "./features/auth/contexts/auth.tsx";
+import { SidebarProvider } from "./shared/contexts/sidebar";
 
 const queryClient = new QueryClient();
 

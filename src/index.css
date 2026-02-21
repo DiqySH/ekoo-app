@@ -2,6 +2,10 @@
 
 @custom-variant dark (&:is(.dark *));
 
+.bold-outline {
+  border-color: #e3e3e3a6;
+}
+
 body {
   font-family: "Bricolage Grotesque", sans-serif;
 }

@@ -1,38 +1,70 @@
-import { createBrowserRouter } from "react-router";
-import Home from "./pages/Home"
-import { Protected } from "./components/protected";
-import { Public } from "./components/public";
-import SignIn from "./pages/SignIn";
-import SignUp from "./pages/SignUp";
-import SidebarLayout from "./layouts/sidebarLayout";
+import { createBrowserRouter, type RouteObject } from "react-router";
+import { Protected } from "@/shared/components/protected";
+import { Public } from "@/shared/components/public";
+import SignIn from "@/features/auth/pages/SignIn";
+import SignUp from "@/features/auth/pages/SignUp";
+import SidebarLayout from "@/layouts/sidebar-layout";
+import Preview from "@/features/preview/pages/Preview";
+import Chat from "@/features/chat/pages/Chat";
+import { Unprotected } from "./shared/components/unprotected";
+import Wallets from "./features/wallets/pages/Wallets";
+import { WalletsProvider } from "./features/wallets/contexts/wallets";
 
-const router = createBrowserRouter([
+const pages: RouteObject[] = [
   {
-    path: "/",
+    path: "/wallets",
+    element: (
+      <Protected>
+        <WalletsProvider>
+          <Wallets />
+        </WalletsProvider>
+      </Protected>
+    ),
+  },
+  {
+    path: "/chat",
     element: (
       <Protected>
         <SidebarLayout>
-          <Home />
+          <Chat />
         </SidebarLayout>
       </Protected>
     ),
   },
   {
+    path: "/preview",
+    element: (
+      <Protected>
+        <SidebarLayout>
+          <Preview />
+        </SidebarLayout>
+      </Protected>
+    ),
+  },
+];
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Public children={null} />,
+  },
+  {
     path: "/sign-in",
     element: (
-      <Public>
+      <Unprotected>
         <SignIn />
-      </Public>
+      </Unprotected>
     ),
   },
   {
     path: "/sign-up",
     element: (
-      <Public>
+      <Unprotected>
         <SignUp />
-      </Public>
+      </Unprotected>
     ),
   },
+  ...pages,
 ]);
 
 export default router;
