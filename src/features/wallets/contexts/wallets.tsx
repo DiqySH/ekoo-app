@@ -32,7 +32,7 @@ export const UseWallets = () => {
   const ctx = useContext(WalletsContext);
 
   if (!ctx) {
-    throw new Error("useAuth must be used inside <WalletsProvider>");
+    throw new Error("useWallets must be used inside <WalletsProvider>");
   }
 
   return ctx;

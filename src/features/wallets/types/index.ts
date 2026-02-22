@@ -1,1 +1,1 @@
-export type { WalletsContextValue } from "./wallets-context";
+export * from "./wallets-context";
