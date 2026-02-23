@@ -21,6 +21,7 @@ export const WalletsProvider = ({ children }: { children: ReactNode }) => {
 
       return data ?? [];
     },
+    staleTime: 1000 * 60 * 5,
   });
 
   return (

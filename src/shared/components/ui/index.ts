@@ -9,3 +9,4 @@ export { default as ChatMessages } from "./chat-messages";
 export { default as ChatInput } from "./chat-input";
 export { default as IconFrame } from "./icon-frame";
 export { Sidebar, SidebarButton } from "./sidebar";
+export { default as Loading } from "./loading";

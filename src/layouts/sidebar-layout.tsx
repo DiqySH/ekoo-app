@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 
 const SidebarLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="flex w-full">
+    <div className="flex w-full min-h-screen">
       <Sidebar />
       {children}
     </div>

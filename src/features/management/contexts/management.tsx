@@ -11,6 +11,14 @@ export const ManagementProvider = ({ children }: { children: ReactNode }) => {
   const params = useParams();
   const walletId = params.walletId;
   const valid = isValidUUID(walletId);
+
+  if (!valid)
+    return (
+      <div className="w-full min-h-screen grid place-items-center">
+        <span>Invalid ID</span>
+      </div>
+    );
+
   const query = useQuery({
     queryKey: [walletId],
     queryFn: async () => {
@@ -24,11 +32,12 @@ export const ManagementProvider = ({ children }: { children: ReactNode }) => {
 
       return data;
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 5, // 5 menit
+    refetchOnWindowFocus: false,
   });
 
   return (
-    <ManagementContext.Provider value={{ ...query, isInvalidId: !valid }}>
+    <ManagementContext.Provider value={query}>
       {children}
     </ManagementContext.Provider>
   );
