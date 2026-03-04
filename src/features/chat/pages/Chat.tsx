@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import type { ChatForm, Message } from "../types";
 import { useForm } from "react-hook-form";
-import { useAiChat } from "../hooks/use-ai-chat";
-import ChatMessages from "@/shared/components/ui/chat-messages";
-import ChatInput from "@/shared/components/ui/chat-input";
-import ImagePreview from "@/shared/components/ui/image-preview";
+import { useAiChat } from "../api/chat";
+import ChatMessages from "@/features/chat/components/chat-messages";
+import ChatInput from "@/features/chat/components/chat-input";
+import ImagePreview from "@/features/chat/components/image-preview";
 
 const fileToBase64 = (file: File): Promise<string> =>
   new Promise((resolve, reject) => {

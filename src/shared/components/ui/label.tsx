@@ -6,7 +6,7 @@ const Label = ({
   className,
   ...props
 }: React.ComponentProps<"label">) => (
-  <label {...props} className={cn("text-sm", className)}>
+  <label {...props} className={cn("text-[17px] font-medium", className)}>
     {children}
   </label>
 );

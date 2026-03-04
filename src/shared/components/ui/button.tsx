@@ -1,10 +1,10 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import type React from "react";
 
-const buttonVariants = cva("px-4 py-2 rounded-[0.5rem] cursor-pointer", {
+const buttonVariants = cva("px-[13px] py-[7px] rounded-[13px] cursor-pointer", {
   variants: {
     variant: {
-      primary: "border-black/40 border bg-[#228D57] text-white",
+      primary: "border-[#8F8F8F]/30 border bg-black text-white",
       secondary: "border-black/40 border bg-white text-black/75",
     },
   },

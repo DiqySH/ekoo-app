@@ -1,23 +1,21 @@
-import { UseWallets } from "../contexts/wallets";
+import { Loading } from "@/shared/components/ui";
+import { useGlobalStore } from "@/store/use-global-store";
 
 const Wallets = () => {
-  const { data, isLoading } = UseWallets();
-  console.log(data);
+  const wallets = useGlobalStore((state) => state.wallets);
 
-  if (isLoading || !data) return <div>Loading...</div>;
+  if (wallets.length === 0) return <Loading />;
 
   return (
     <div className="w-full min-h-screen grid place-items-center">
       <div className="flex flex-col">
         <h1 className="text-4xl font-bold">Wallets</h1>
         <div>
-          {data.map((w) => {
-            return (
-              <div key={w.id} className="w-75">
-                {w.wallet_name}
-              </div>
-            );
-          })}
+          {wallets.map((w) => (
+            <div key={w.id} className="w-75">
+              {w.wallet_name}
+            </div>
+          ))}
         </div>
       </div>
     </div>
